@@ -1,13 +1,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Home page</title>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Lab 3</title>
 
 <meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
-<link href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" rel="stylesheet">
-<meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
-<link href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" rel="stylesheet"></head>
+<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.22.1/mapbox-gl.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.22.1/mapbox-gl.css' rel='stylesheet' />
+</head>
 <body>
 <table style="font-family: Tahoma; background-color: rgb(221, 221, 220); width: 100%; height: 5%; text-align: left; margin-left: auto; margin-right: auto; color: black;" border="0" cellpadding="2" cellspacing="2">
 <tbody>
@@ -33,20 +32,255 @@ of Auckland</big></big><small>
 <th style="text-align: center; font-family: Tahoma;"><a href="lab2.html"><big>LAB 02</big></a></th>
 <th style="text-align: center; font-family: Tahoma;"><a href="lab3.html"><big>LAB 03</big></a></th>
 <th style="text-align: center; font-family: Tahoma;"><a href="lab4.html"><big>LAB 04</big></a></th>
-<th style="text-align: center; font-family: Tahoma;"><a href="lab5.html"><big>LAB 05</big></a></th>
+<th style="text-align: center; font-family: Tahoma;"><a href="lab5.html"><big>PROJECT</big></a></th>
 </tr>
 </tbody>
 </table>
 <table style="width: 1000px; height: 2%; text-align: left; margin-left: auto; margin-right: auto;" border="0" cellpadding="0" cellspacing="0">
 <tbody>
 <tr>
-<td><br>
-<p style="height: 8px; font-family: Tahoma;">This page is under construction.</p>
+<td ><br style="font-family: Tahoma;">
+<p style="height: 8px; font-family: Tahoma;text-align: justify;">We used Mapbox in this Lab to map New Zealand's "Great Walks" which are a series of nine multi-day hiking tracks. Map 01 was created using an onlne cartographic GUI platform called "Mapbox Studio". Mapbox Studio provides us interface to design interactive web maps, encode and render as vector map tiles. Map 02 is designed using Mapbox GL JS (Web Graphics library JavaScript) which is a framework for customizing and rendering webmaps that integrates with Maobox Studio. Mapbox GL JS framework allows us to add aditional display controls and interactive functionalities to the map by scripting.</p>
 <p style="height: 8px;"></p>
 </td>
 </tr>
-
 </tbody>
 </table>
 <br>
+<br>
+<br>
+<table style="width: 1000px; height: 2%; text-align: left; margin-left: auto; margin-right: auto; font-family: Arial;" border="0" cellpadding="0" cellspacing="0">
+<tbody>
+<tr>
+<td style="font-weight: bold; text-align: center;font-family: Tahoma;">Map 01 - Designed in Mapbox Studio</td>
+<td style="font-weight: bold; text-align: center;font-family: Tahoma;">Map 02 - Designed in Mapbox GL JS</td>
+<br>
+</tr>
+</tbody>
+</table>
+<table style="width: 1000px; height: 2%; text-align: left; margin-left: auto; margin-right: auto; font-family: Arial;" border="0" cellpadding="0" cellspacing="0">
+<tbody>
+<tr>
+<td>
+<div id="map" style="width: 490px; height: 600px;"></div>
+<script>
+mapboxgl.accessToken = 'pk.eyJ1IjoiaGFuc2FraW5raW5pIiwiYSI6ImNpZmhidW05YjJkMHdpdWx4dHh0OHBubnMifQ.YjyWELAR2Giuu8CGTlsJGA';
+var map = new mapboxgl.Map({
+container: 'map', // container id
+style: 'mapbox://styles/hansakinkini/cirwtt113003ygbmfe2vqmxpn', //hosted style id
+center: [173.151528, -41.049010], // starting position
+zoom: 4.3 // starting zoom
+});
+</script>
+</td>
+<td align="undefined" valign="undefined">
+
+<div id="map2" style="width: 490px; height: 600px;"></div>
+<script>
+mapboxgl.accessToken = "pk.eyJ1IjoiaGFuc2FraW5raW5pIiwiYSI6ImNpZmhidW05YjJkMHdpdWx4dHh0OHBubnMifQ.YjyWELAR2Giuu8CGTlsJGA";
+var map2 = new mapboxgl.Map({
+    container: 'map2',
+    style: "mapbox://styles/hansakinkini/cis3s92qd000ggnkobldegmwa",
+    center: [173.151528, -41.049010],
+    zoom: 4.3
+});
+
+map2.on('load', function () {
+
+    map2.addSource('tracks', {
+        type: 'vector',
+        url: "mapbox://hansakinkini.40i6tgde"
+    });
+    map2.addLayer({
+        'id': 'tracks',
+        'type': 'line',
+        'source': 'tracks',
+        'source-layer': "greatwalks-0bpd0q",
+        'layout': {
+            'visibility': 'visible',
+            'line-join': 'round',
+            'line-cap': 'round'
+        },
+        'paint': {
+            'line-color': '#ff33cc',
+            'line-width': 1
+          }
+      }); 
+      map2.addSource("points", {
+        "type": "geojson",
+        "data": {
+            "type": "FeatureCollection",
+            "features": [{
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [176.99335098266602,
+          -38.80975079723835]
+                },
+                "properties": {
+                    "title": "Lake Waikaremoana Great walk",
+                    "marker-symbol": "garden"
+                }
+            }, {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [175.517578125,
+          -39.304549870145806]
+                },
+                "properties": {
+                    "title": "Round The Mountain Track",
+                    "marker-symbol": "garden"
+                }
+            }, {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [175.16876220703125,
+          -39.61944148822781]
+                },
+                "properties": {
+                    "title": "Whanganui River",
+                    "marker-symbol": "garden"
+                }
+            }, {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [173.0504608154297,
+          -40.88237140485817]
+                },
+                "properties": {
+                    "title": "Abel Tasman Coast Track",
+                    "marker-symbol": "garden"
+                }
+            }, {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [172.13833808898926,
+          -40.95922458946705]
+                },
+                "properties": {
+                    "title": "Heaphy Track",
+                    "marker-symbol": "garden"
+                }
+             }, {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [168.16978454589844,
+          -44.76550560765375]
+                },
+                "properties": {
+                    "title": "Routeburn Track",
+                    "marker-symbol": "garden"
+                }
+             }, {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [167.76333332061768,
+          -44.804402275060575]
+                },
+                "properties": {
+                    "title": "Milford Track",
+                    "marker-symbol": "garden"
+                }
+            }, {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [167.57617950439453,
+          -45.45338759851046]
+                },
+                "properties": {
+                    "title": "Kepler Track",
+                    "marker-symbol": "garden"
+                }
+                }, {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [168.06095123291016,
+          -46.87403992460051]
+                },
+                "properties": {
+                    "title": "Rakiura Track",
+                    "marker-symbol": "garden"
+                }
+            }]
+        }
+    });
+
+    map2.addLayer({
+        "id": "points",
+        "type": "symbol",
+        "source": "points",
+        "layout": {
+            "icon-image": "{marker-symbol}-15",
+            "icon-ignore-placement":true,
+            "text-field": "",
+            //"text-field": "{title}",
+            "text-optional":true,
+            "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+            "text-size":10,
+            "text-offset": [0.6, 0.6],
+            "text-anchor": "left"
+        }
+    });
+   
+});
+
+var popup = new mapboxgl.Popup({
+    closeButton: true,
+    closeOnClick: false
+});
+
+map2.on('click', function(e) {
+    var features = map2.queryRenderedFeatures(e.point, { layers: ['points'] });
+    if (features.length) {
+        map2.flyTo({center: features[0].geometry.coordinates, zoom:10 });
+    }
+
+// To enable/disable popup on click comment/un-comment below section.
+// Keep either popup on hover OR popup on click enabled, not both.
+//    var feature = features[0];
+//
+//    popup.setLngLat(feature.geometry.coordinates)
+//        .setHTML(feature.properties.title)
+//        .addTo(map2);
+// end of popup section
+
+});
+
+map2.on('mousemove', function(e) {
+    var features = map2.queryRenderedFeatures(e.point, { layers: ['points'] });
+    map2.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
+
+// To enable/disable popup on hover comment/un-comment below section
+// Keep either popup on hover OR popup on click enabled, not both.
+    if (!features.length) {
+        popup.remove();
+        return;
+    }
+
+    var feature = features[0];
+
+    popup.setLngLat(feature.geometry.coordinates)
+        .setHTML(feature.properties.title)
+        .addTo(map2);
+// end of popup section
+
+});
+
+map2.setLayerZoomRange("greatwalks-0bpd0q", 10, 22);   
+
+</script>
+
+</td>
+</tr>
+</tbody>
+</table>
+<br style="font-family: Arial;">
 </body></html>
