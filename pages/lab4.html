@@ -3,11 +3,39 @@
 <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Lab 4</title>
 
 <meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
-<link href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" rel="stylesheet">
-<meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
-<link href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" rel="stylesheet"></head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="http://npmcdn.com/leaflet@0.7.7/dist/leaflet.css">
+<script src="http://npmcdn.com/leaflet@0.7.7/dist/leaflet.js"></script>
+<style>
+.info{
+padding:12px;
+font:12px Tahoma;
+background:white;
+background:rgba(137,126,136,0.8);
+box-shadow:0 0 15px rgba(0,0,0.2);
+border-radius:12px;
+opacity: 1;
+}
+.info h4{
+margin:0 0 5px;
+color:#1C1A1C;
+}
+.legend {
+width: 95px;
+height: 220px;
+line-height: 20px;
+text-align: left;
+color: #1C1A1C;
+}
+.legend i {
+width: 20px;
+height: 20px;
+float: left;
+margin-right: 8px;
+opacity: 2.0;
+}
+</style>
+</head>
 <body>
 <table style="font-family: Tahoma; background-color: rgb(221, 221, 220); width: 100%; height: 5%; text-align: left; margin-left: auto; margin-right: auto; color: black;" border="0" cellpadding="2" cellspacing="2">
 <tbody>
@@ -33,7 +61,8 @@ of Auckland</big></big><small>
 <th style="text-align: center; font-family: Tahoma;"><a href="lab2.html"><big>LAB 02</big></a></th>
 <th style="text-align: center; font-family: Tahoma;"><a href="lab3.html"><big>LAB 03</big></a></th>
 <th style="text-align: center; font-family: Tahoma;"><a href="lab4.html"><big>LAB 04</big></a></th>
-<th style="text-align: center; font-family: Tahoma;"><a href="lab5.html"><big>PROJECT</big></a></th>
+<th style="text-align: center; font-family: Tahoma;"><a href="lab5.html"><big>LAB 05</big></a></th>
+<th style="text-align: center; font-family: Tahoma;"><a href="project.html"><big>PROJECT</big></a></th>
 </tr>
 </tbody>
 </table>
@@ -41,11 +70,120 @@ of Auckland</big></big><small>
 <tbody>
 <tr>
 <td><br style="font-family: Tahoma;">
-<p style="height: 8px; font-family: Tahoma;">This page is under construction.</p>
+<p style="height: 8px; font-family: Tahoma;">This time we worked with a point event dataset of fire incidences in Auckland provided by the <a href="http://www.fire.org.nz/">New Zealand Fire Service.</a> The technique used to create the map is "hexbin mapping" which is a means of adderessing the overplotting problem of overlapping symbology at smaller scale. We created a hexbin mesh (a method of tesalation) in QGIS and also worked with Leaflet and GeoJson in this lab.</p>
+<br>
 <p style="height: 8px;"></p>
 </td>
 </tr>
+<tr>
+<td>
+<div id="map" style="width: 100%; height: 600px;"></div>
+<script type="text/javascript" src="../js/hexbins_fire_AKL.js"></script>
+<script>
 
+var mymap = L.map('map').setView([-36.91, 174.83], 10);
+    
+L.tileLayer('https://api.mapbox.com/styles/v1/hansakinkini/citicsbum00302jplwm7pr4tn/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiaGFuc2FraW5raW5pIiwiYSI6ImNpZmhidW05YjJkMHdpdWx4dHh0OHBubnMifQ.YjyWELAR2Giuu8CGTlsJGA', 
+    {
+        maxZoom: 20,
+        attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a>  | Fire incidence data &copy; <a href="http://www.fire.org.nz/">2016 New Zealand Fire Service</a>',
+        id: 'mapbox.streets'
+    }).addTo(mymap);
+
+function getColor(d) {
+  return  d > 70  ? '#800026':
+          d > 50  ? '#BD0026':
+          d > 30  ? '#F31A1C':
+          d > 20  ? '#FC4E2A':
+          d > 10  ? '#FD8D3C':
+          d > 5   ? '#FEB24C':
+          d > 0   ? '#FED976':
+                    '#FFEDA0';
+ }
+
+ function style (feature){
+    
+  return {
+    fillColor:getColor(feature.properties.PNTCNT),
+    weight: 1,
+    opacity: 1,
+    color: "white",
+    fillOpacity: 2.5
+  };
+}
+
+//adding interactivity
+var geojson;
+
+//event listnetrs
+function highlightFeature(e) {
+  var layer = e.target;
+  layer.setStyle({
+    weight: 2.5,
+    color:"black",
+    fillOpacity: 1
+  });
+  if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+    layer.bringToFront();
+  }
+    info.update(layer.feature.properties);
+}
+
+function resetHighlight(e){
+    geojson.resetStyle(e.target);
+    info.update();
+}
+       
+function onEachFeature(feature,layer) {
+  layer.on({
+    mouseover: highlightFeature,
+    mouseout: resetHighlight,
+  });
+}
+
+geojson = L.geoJson(hexbin,{style:style,onEachFeature:onEachFeature}).addTo(mymap);
+
+//adding custom controls
+var info = L.control();
+
+info.onAdd = function (map){
+    
+    this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+    this.update();
+    return this._div;
+};
+      
+//update the control based on feature properties passed:   
+info.update = function(props) {
+    
+    this._div.innerHTML='<h4>Structural fires reported:</h4><b>' + (props ? + props.PNTCNT + ' fires': 'hover over a hexbin</b>');    
+    };
+    
+info.addTo(mymap);    
+
+// legend section    
+var legend = L.control({position: 'bottomright'});
+    
+legend.onAdd = function (map) {
+    
+    var div = L.DomUtil.create('div','info legend'), 
+        grades = [0, 5, 10, 20, 30, 50, 70],
+        key_labels  =["0 - 5", "6 - 10", "11 - 20", "21 - 30", "31 - 50", "51 - 70", "> 70"],
+        labels=["<b>Structural Fires <br>in Auckland <br>2013 - 2016</b><br>"];
+    
+    for (var i = 0; i < grades.length; i++){
+            labels.push('<i style="background:' + getColor(grades[i]) + '"></i><b>' + key_labels[i] + '</b>')
+        } 
+        
+        div.innerHTML = labels.join('<br>');
+        return div;
+    };
+    
+legend.addTo(mymap);
+    
+</script>
+</td>
+</tr>
 </tbody>
 </table>
 <br>
