@@ -43,7 +43,7 @@ opacity: 2.0;
     .leaflet-label-overlay {
         line-height:0px;
         margin-top: 10px;
-        padding: 15px;
+        padding: 8px;
         position:absolute;
         font: 12px Arial, sans-serif;
     }
@@ -189,22 +189,27 @@ L.LabelOverlay = L.Class.extend({
         }
     });   
 
-var labelLocation = new L.LatLng(-36.821, 174.745);
+var labelLocation = new L.LatLng(-36.250, 174.745);
     var labelTitle = new L.LabelOverlay(labelLocation, '<b>AUCKLAND</b>');
     mymap.addLayer(labelTitle);
 
 
-    var labelLocation2 = new L.LatLng(-37.784, 175.284);
+var labelLocation2 = new L.LatLng(-37.900, 175.750);
     var labelTitle2 = new L.LabelOverlay(labelLocation2, '<b>HAMILTON</b>');
     mymap.addLayer(labelTitle2);
 
- var labelLocation3 = new L.LatLng(-43.528, 172.620);
+var labelLocation3 = new L.LatLng(-43.528, 172.620);
     var labelTitle3 = new L.LabelOverlay(labelLocation3, '<b>CHRISTCHURCH</b>');
     mymap.addLayer(labelTitle3);
 
-  var labelLocation4 = new L.LatLng(-45.867, 169.488);
+var labelLocation4 = new L.LatLng(-45.867, 170.250);
     var labelTitle4 = new L.LabelOverlay(labelLocation4, '<b>DUNEDIN</b>');
     mymap.addLayer(labelTitle4);
+
+var labelLocation5 = new L.LatLng(-41.0, 174.778);
+    var labelTitle5 = new L.LabelOverlay(labelLocation5, '<b>WELLINGTON</b>');
+    mymap.addLayer(labelTitle5);
+
 
     // Event handlers to prevent the text labels to "jump" when zooming in and out,
     // in Google Chrome. (works fine in firefox without the following though.)
@@ -214,6 +219,7 @@ var labelLocation = new L.LatLng(-36.821, 174.745);
         map.removeLayer(labelTitle2);
         map.removeLayer(labelTitle3);
         map.removeLayer(labelTitle4);
+        map.removeLayer(labelTitle5);
         });
 
     map.on('moveend', function () {
@@ -221,6 +227,7 @@ var labelLocation = new L.LatLng(-36.821, 174.745);
         map.addLayer(labelTitle2);
         map.addLayer(labelTitle3);
         map.addLayer(labelTitle4);
+        map.addLayer(labelTitle5);
         });
 
 </script>
