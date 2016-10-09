@@ -22,7 +22,7 @@ color:#1C1A1C;
 }
 
 .legend {
-width: 200px;
+width: 300px;
 height: 150px;
 line-height: 20px;
 text-align: left;
@@ -35,6 +35,18 @@ float: left;
 margin-right: 8px;
 opacity: 2.0;
 }
+
+ .leaflet-popup-close-button {
+        display:none;
+    }
+
+    .leaflet-label-overlay {
+        line-height:0px;
+        margin-top: 10px;
+        padding: 15px;
+        position:absolute;
+        font: 12px Arial, sans-serif;
+    }
 </style>
 </head>
 <body>
@@ -87,8 +99,8 @@ L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
      attribution: 'Map tiles &copy; <a href="http://cartodb.com/attributions">Carto </a>| Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> | Twitter data &copy; <a href="https://twitter.com/mattzook"> @mattzook</a> & <a href="http://www.floatingsheep.org">Floating Sheep</a>',}).addTo(mymap);	
 
 function getColor(d) {
-  return  d > 1.101 ? '#861608':
-          d > 0.901 ? '#e9b10f':
+  return  d > 1.1 ? '#861608':
+          d > 0.90 ? '#e9b10f':
           d > 0.001 ? '#1cb0a6':
           d > 0     ? '#1cb0a6':
                     'transparent';
@@ -126,7 +138,7 @@ legend.onAdd = function (map) {
     
     var div = L.DomUtil.create('div','info legend'), 
         grades = [0, 0.9, 1.1],
-        key_labels  =["More All Blacks Tweets", "Equal Tweets", "More Pizza Tweets"],
+        key_labels  =["More All Blacks Tweets", "Equal Tweets - Pizza and All Blacks", "More Pizza Tweets"],
         labels=["<b>Relative intensity of tweets - Pizza and All Blacks<br>(June 2012 to September 2016)<br></b>"];
     
     for (var i = 0; i < grades.length; i++){
@@ -141,6 +153,75 @@ legend.onAdd = function (map) {
     };
     
 legend.addTo(mymap);
+
+//text lables
+
+L.LabelOverlay = L.Class.extend({
+        initialize: function(/*LatLng*/ latLng, /*String*/ label, options) {
+            this._latlng = latLng;
+            this._label = label;
+            L.Util.setOptions(this, options);
+        },
+        options: {
+            offset: new L.Point(0, 2)
+        },
+        onAdd: function(map) {
+            this._map = map;
+            if (!this._container) {
+                this._initLayout();
+            }
+            map.getPanes().overlayPane.appendChild(this._container);
+            this._container.innerHTML = this._label;
+            map.on('viewreset', this._reset, this);
+            this._reset();
+        },
+        onRemove: function(map) {
+            map.getPanes().overlayPane.removeChild(this._container);
+            map.off('viewreset', this._reset, this);
+        },
+        _reset: function() {
+            var pos = this._map.latLngToLayerPoint(this._latlng);
+            var op = new L.Point(pos.x + this.options.offset.x, pos.y - this.options.offset.y);
+            L.DomUtil.setPosition(this._container, op);
+        },
+        _initLayout: function() {
+            this._container = L.DomUtil.create('div', 'leaflet-label-overlay');
+        }
+    });   
+
+var labelLocation = new L.LatLng(-36.821, 174.745);
+    var labelTitle = new L.LabelOverlay(labelLocation, '<b>AUCKLAND</b>');
+    mymap.addLayer(labelTitle);
+
+
+    var labelLocation2 = new L.LatLng(-37.784, 175.284);
+    var labelTitle2 = new L.LabelOverlay(labelLocation2, '<b>HAMILTON</b>');
+    mymap.addLayer(labelTitle2);
+
+ var labelLocation3 = new L.LatLng(-43.528, 172.620);
+    var labelTitle3 = new L.LabelOverlay(labelLocation3, '<b>CHRISTCHURCH</b>');
+    mymap.addLayer(labelTitle3);
+
+  var labelLocation4 = new L.LatLng(-45.867, 169.488);
+    var labelTitle4 = new L.LabelOverlay(labelLocation4, '<b>DUNEDIN</b>');
+    mymap.addLayer(labelTitle4);
+
+    // Event handlers to prevent the text labels to "jump" when zooming in and out,
+    // in Google Chrome. (works fine in firefox without the following though.)
+
+     map.on('movestart', function () {
+        map.removeLayer(labelTitle);
+        map.removeLayer(labelTitle2);
+        map.removeLayer(labelTitle3);
+        map.removeLayer(labelTitle4);
+        });
+
+    map.on('moveend', function () {
+        map.addLayer(labelTitle);
+        map.addLayer(labelTitle2);
+        map.addLayer(labelTitle3);
+        map.addLayer(labelTitle4);
+        });
 
 </script>
 </p>
