@@ -23,7 +23,7 @@ color:#1C1A1C;
 
 .legend {
 width: 310px;
-height: 150px;
+height: 145px;
 line-height: 20px;
 text-align: left;
 color: #1C1A1C;
@@ -99,13 +99,12 @@ L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
      attribution: 'Map tiles &copy; <a href="http://cartodb.com/attributions">Carto </a>| Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> | Twitter data &copy; <a href="https://twitter.com/mattzook"> @mattzook</a> & <a href="http://www.floatingsheep.org">Floating Sheep</a>',}).addTo(mymap);	
 
 function getColor(d) {
-  return  d > 1.1 ? '#861608':
-          d > 0.90 ? '#e9b10f':
-          d > 0.001 ? '#1cb0a6':
-          d > 0     ? '#1cb0a6':
-                    'transparent';
+  return  d >= 1.1  ? '#861608':
+          d >= 0.90 ? '#e9b10f':
+          d >= 0.01 ? '#1cb0a6':
+          d >= 0    ? '#e8dfbf':
+                     '#e8dfbf';
  }
-
 
 function style (feature){
     
@@ -118,6 +117,9 @@ function style (feature){
   };
 }
  L.geoJson(tlq,{style:style}).addTo(mymap) 
+
+//no twotter activity
+
 
 
 //hexbin mesh for background
@@ -137,15 +139,12 @@ var legend = L.control({position: 'topright'});
 legend.onAdd = function (map) {
     
     var div = L.DomUtil.create('div','info legend'), 
-        grades = [0, 0.9, 1.1],
-        key_labels  =["More All Blacks Tweets", "Equal Tweets - Pizza and All Blacks", "More Pizza Tweets"],
-        labels=["<b>Relative intensity of tweets - Pizza and All Blacks<br>(June 2012 to September 2016)<br></b>"];
+        grades = [1.1, 0.9, 0.01, 0],
+        key_labels  =["More Pizza Tweets","Equal Tweets - Pizza and All Blacks","More All Blacks Tweets","No Twitter activity about Pizza and All Blacks"],
+        labels=["<b>Relative intensity of tweets - Pizza and All Blacks<br>(June 201,2 to September 2016)<br></b>"];
     
     for (var i = 0; i < grades.length; i++){
-      from = grades[i];
-      to = grades[i + 0.001];
-      
-            labels.push('<i style="background:' + getColor(from + 0.1) + '"></i><b>' + key_labels[i] + '</b>')
+            labels.push('<i style="background:' + getColor(grades[i]) + '"></i><b>' + key_labels[i] + '</b>')
         } 
         
         div.innerHTML = labels.join('<br>');
@@ -153,6 +152,14 @@ legend.onAdd = function (map) {
     };
     
 legend.addTo(mymap);
+
+info.update = function(props) {
+    
+    this._div.innerHTML='<h4>Relative intensity of Tweets</h4><b>' + (props ? + props.LQ + 'Location Quotient': 'hover over a hexbin</b>');    
+    };
+    
+info.addTo(mymap);    
+
 
 //text lables
 
