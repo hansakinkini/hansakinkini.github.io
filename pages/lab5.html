@@ -141,7 +141,7 @@ legend.onAdd = function (map) {
     var div = L.DomUtil.create('div','info legend'), 
         grades = [1.1, 0.9, 0.01, 0],
         key_labels  =["More Pizza Tweets","Equal Tweets - Pizza and All Blacks","More All Blacks Tweets","No Twitter activity about Pizza and All Blacks"],
-        labels=["<b>Relative intensity of tweets - Pizza and All Blacks<br>(June 201,2 to September 2016)<br></b>"];
+        labels=["<b>Relative intensity of tweets - Pizza and All Blacks<br>(June 2012 to September 2016)<br></b>"];
     
     for (var i = 0; i < grades.length; i++){
             labels.push('<i style="background:' + getColor(grades[i]) + '"></i><b>' + key_labels[i] + '</b>')
