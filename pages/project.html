@@ -8,11 +8,11 @@
 <script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>    
 <style>
     #map { width: 100%; height:100%; background: black;}
-    #menu { position: absolute; top: 5px; right: 10px; width: 50px; height:60px; background: transparent; z-index:10; }
+    #menu { position: absolute; top: 325px; right: 175px; width: 50px; height:60px; background: transparent; z-index:10; }
     #menu a { 
       margin: 15px 10px 0 0;
       float: right;
-      vertical-align: baseline;
+      vertical-align: top;
       width: 80px;
       padding: 10px;
       text-align: center;
@@ -159,7 +159,7 @@ were obtained from 2010 to June 2016. Here is my attempt on mapping locations od
 </tr>
 <tr>
 <td>
-<div id="map" style="width: 100%; height: 600px;">
+<div id="map" style="width: 100%; height: 600px;"></div>
   <div id='menu'>
     <a href="#shopliftings" id="shopliftings" class="button shopliftings">SHOPLIFTINGS</a> 
     <a href="#burglaries" id="burglaries" class="button burglaries">BURGLARIES</a> 
@@ -167,7 +167,6 @@ were obtained from 2010 to June 2016. Here is my attempt on mapping locations od
     <a href="#drugs" id="drugs" class="button drugs">DRUGS</a>
     <a href="#all" id="all" class="button all">ALL</a>
   </div>
-</div>
 </td>
 </tr>
 </tbody>
